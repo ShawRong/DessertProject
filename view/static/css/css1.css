@@ -1,0 +1,64 @@
+body
+{
+	background-color: #2d3a4b;
+	color: white;
+}
+.logintext
+{
+	font-size: 40px;
+}
+.login
+{
+	margin: auto;
+	margin-top: 200px;
+	width: max-content;
+	padding: 10px;
+	text-align: center;
+	font-size: larger;
+}
+.loginbutton
+{
+	width: 40%;
+	background-color: white;
+	border-color: lightblue;
+	height: 30px;
+	margin: 20px;
+	font-size: large;
+	transition-duration: 0.4s;
+	cursor: pointer;
+}
+.loginbutton:hover
+{
+	background-color: lightblue;
+	color: white;
+}
+.logininput
+{
+	margin: 20px;
+	height: 30px;
+	width: 350px;
+	font-size: x-large;
+}
+.puzzleinput
+{
+	width: 50px;
+	height: 30px;
+	font-size: x-large;
+}
+.puzzle
+{
+	font-size: xx-large;
+	margin: auto;
+	margin-top: 200px;
+	padding: 10px;
+	text-align: center;
+}
+.table
+{
+	width: 80%;
+	margin-left: 10%;
+}
+.td
+{
+	width: 10px;
+}
