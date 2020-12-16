@@ -17,14 +17,19 @@ func Buildquiz(ctx iris.Context) {
 	var quizinfo datasource.QuizInfo
 	quizinfo.QuizNum = quiz.Num
 	quizinfo.QuizRank = quiz.Rank
-	quizinfo.QuizContent.X = quiz.X
-	quizinfo.QuizContent.Y = quiz.Y
-	quizinfo.QuizContent.Sig = quiz.Sig
-	quizinfo.QuizContent.Res = quiz.Res
+	quizinfo.X = quiz.X
+	quizinfo.Y = quiz.Y
+	quizinfo.Sig = quiz.Sig
+	quizinfo.Res = quiz.Res
 
-	datasource.DBcreate_quiz(datasource.Quizdb, quizinfo)
-	data := "OK"
-	ctx.JSON(model.Response{Status: true, Data: data})
+	err := datasource.DBcreate_quiz(datasource.Quizdb, quizinfo)
+	if err != nil {
+		data := "Exist"
+		ctx.JSON(model.Response{Status: true, Data: data})
+	} else {
+		data := "OK"
+		ctx.JSON(model.Response{Status: true, Data: data})
+	}
 }
 
 func Getquiz(ctx iris.Context) {
@@ -51,10 +56,10 @@ func Getquiz(ctx iris.Context) {
 		var quiz model.Question
 		quiz.Num = quizinfo.QuizNum
 		quiz.Rank = quizinfo.QuizRank
-		quiz.X = quizinfo.QuizContent.X
-		quiz.Y = quizinfo.QuizContent.Y
-		quiz.Sig = quizinfo.QuizContent.Sig
-		quiz.Res = quizinfo.QuizContent.Res
+		quiz.X = quizinfo.X
+		quiz.Y = quizinfo.Y
+		quiz.Sig = quizinfo.Sig
+		quiz.Res = quizinfo.Res
 		ctx.JSON(quiz)
 	} else {
 		quizinfos, err := datasource.DBfind_quiz_byRank(datasource.Quizdb, info.Rank)
@@ -70,10 +75,10 @@ func Getquiz(ctx iris.Context) {
 			var quiz model.Question
 			quiz.Num = quizinfo.QuizNum
 			quiz.Rank = quizinfo.QuizRank
-			quiz.X = quizinfo.QuizContent.X
-			quiz.Y = quizinfo.QuizContent.Y
-			quiz.Sig = quizinfo.QuizContent.Sig
-			quiz.Res = quizinfo.QuizContent.Res
+			quiz.X = quizinfo.X
+			quiz.Y = quizinfo.Y
+			quiz.Sig = quizinfo.Sig
+			quiz.Res = quizinfo.Res
 			ctx.JSON(quiz)
 		}
 	}

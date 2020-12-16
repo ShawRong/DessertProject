@@ -44,9 +44,14 @@ func Registe(ctx iris.Context) {
 	var userinfo datasource.UserInfo
 	userinfo.Username = aul.Username
 	userinfo.PassWord = aul.Password
-	datasource.DBcreate_user(datasource.Userdb, userinfo)
-	data := "Nice"
-	_, _ = ctx.JSON(model.Response{Status: true, Data: data})
+	err := datasource.DBcreate_user(datasource.Userdb, userinfo)
+	if err != nil {
+		data := "Exist"
+		_, _ = ctx.JSON(model.Response{Status: true, Data: data})
+	} else {
+		data := "Nice"
+		_, _ = ctx.JSON(model.Response{Status: true, Data: data})
+	}
 }
 
 //about wrongtopic
@@ -78,10 +83,10 @@ func Findwrongtopic(ctx iris.Context) {
 		}
 		num := quizinfo.QuizNum
 		rank := quizinfo.QuizRank
-		x := quizinfo.QuizContent.X
-		y := quizinfo.QuizContent.Y
-		sig := quizinfo.QuizContent.Sig
-		res := quizinfo.QuizContent.Res
+		x := quizinfo.X
+		y := quizinfo.Y
+		sig := quizinfo.Sig
+		res := quizinfo.Res
 
 		_, _ = ctx.JSON(model.Question{Num: num, Rank: rank, X: x, Y: y, Sig: sig, Res: res})
 	}

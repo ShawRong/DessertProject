@@ -13,20 +13,22 @@ type UserInfo struct {
 var Userdb *gorm.DB
 
 //dbname = userdb
-func DBinit_user() {
-	db, err := gorm.Open("mysql", "dessert:dessert@/"+"userdb"+"?charset=utf8mb4&parseTime=True&loc=Local")
+func DBinit_user() error {
+	db, err := gorm.Open("mysql", "root:root@(localhost:3306)/"+"userdb"+"?charset=utf8mb4&parseTime=True&loc=Local")
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	db.AutoMigrate(&UserInfo{})
 	// ......
 
 	Userdb = db
+	return nil
 }
 
-func DBcreate_user(db *gorm.DB, userinfo UserInfo) {
-	db.Create(&userinfo)
+func DBcreate_user(db *gorm.DB, userinfo UserInfo) error {
+	err := db.Create(&userinfo).Error
+	return err
 }
 
 func DBfind_user(db *gorm.DB, username string) (UserInfo, error) {

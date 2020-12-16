@@ -1,6 +1,8 @@
 package datasource
 
 import (
+	"errors"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
@@ -13,35 +15,37 @@ type WrongTopic struct {
 var WrongTopicdb *gorm.DB
 
 //dbname = topicdb
-func DBinit_topic() {
-	db, err := gorm.Open("mysql", "dessert:dessert@/"+"topicdb"+"?charset=utf8mb4&parseTime=True&loc=Local")
+func DBinit_topic() error {
+	db, err := gorm.Open("mysql", "root:root@(localhost:3306)/"+"topicdb"+"?charset=utf8mb4&parseTime=True&loc=Local")
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	db.AutoMigrate(&WrongTopic{})
 	// ......
 
 	WrongTopicdb = db
+	return nil
 }
 
-func DBcreate_topic(db *gorm.DB, wrongtopic WrongTopic) {
-	db.Create(&wrongtopic)
+func DBcreate_topic(db *gorm.DB, wrongtopic WrongTopic) error {
+	err := db.Create(&wrongtopic).Error
+	return err
 }
 
 func DBfind_topic(db *gorm.DB, username string) ([]WrongTopic, error) {
 	var wrongtopics []WrongTopic
-	err := db.Where("username = ?", username).Find(&wrongtopics).Error
-	if err != nil {
-		var invalid []WrongTopic
-		return invalid, err
+	db.Where("username = ?", username).Find(&wrongtopics)
+	if len(wrongtopics) == 0 {
+		return wrongtopics, errors.New("empty slice")
+	} else {
+		return wrongtopics, nil
 	}
-	return wrongtopics, nil
 }
 
 func DBdelete_topic(db *gorm.DB, username string, quiznum string) error {
 	var wrongtopic WrongTopic
-	err := db.Where("username = ? AND quiznum = ?", username, quiznum).First(&wrongtopic).Error
+	err := db.Where("username = ? AND quiz_num = ?", username, quiznum).First(&wrongtopic).Error
 	if err != nil {
 		return err
 	}
