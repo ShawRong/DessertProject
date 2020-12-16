@@ -5,18 +5,17 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-type quizcontent struct {
-	x   string
-	y   string
-	sig string
-	res string
+type Quizcontent struct {
+	X   string
+	Y   string
+	Sig string
+	Res string
 }
 
 type QuizInfo struct {
-	gorm.Model
-	QuizNum     int
-	QuizRank    int
-	QuizContent quizcontent
+	QuizNum     string `gorm:"primary_key"`
+	QuizRank    string
+	QuizContent Quizcontent
 }
 
 var Quizdb *gorm.DB
@@ -38,9 +37,9 @@ func DBcreate_quiz(db *gorm.DB, quizinfo QuizInfo) {
 	db.Create(&quizinfo)
 }
 
-func DBfind_quiz(db *gorm.DB, quiznum int) (QuizInfo, error) {
+func DBfind_quiz(db *gorm.DB, quiznum string) (QuizInfo, error) {
 	var quizinfo QuizInfo
-	err := db.First(&quizinfo, "quiznum = ?", quiznum).Error
+	err := db.Where("quiznum = ?", quiznum).First(&quizinfo).Error
 	if err != nil {
 		var invalid QuizInfo
 		return invalid, err
@@ -48,17 +47,17 @@ func DBfind_quiz(db *gorm.DB, quiznum int) (QuizInfo, error) {
 	return quizinfo, nil
 }
 
-func DBfind_quiz_byRank(db *gorm.DB, quizrank int) (QuizInfo, error) {
-	var quizinfo QuizInfo
-	err := db.First(&quizinfo, "quizrank = ?", quizrank).Error
+func DBfind_quiz_byRank(db *gorm.DB, quizrank string) ([]QuizInfo, error) {
+	var quizinfos []QuizInfo
+	err := db.Where("quizrank = ?", quizrank).Find(&quizinfos).Error
 	if err != nil {
-		var invalid QuizInfo
+		var invalid []QuizInfo
 		return invalid, err
 	}
-	return quizinfo, nil
+	return quizinfos, nil
 }
 
-func DBupdate_quiz(db *gorm.DB, quiznum int, quizinfo QuizInfo) error {
+func DBupdate_quiz(db *gorm.DB, quiznum string, quizinfo QuizInfo) error {
 	findquiz, err := DBfind_quiz(db, quiznum)
 	if err != nil {
 		return err

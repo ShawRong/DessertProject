@@ -6,8 +6,7 @@ import (
 )
 
 type UserInfo struct {
-	gorm.Model
-	Username string
+	Username string `gorm:"primary_key"`
 	PassWord string
 }
 
@@ -32,7 +31,7 @@ func DBcreate_user(db *gorm.DB, userinfo UserInfo) {
 
 func DBfind_user(db *gorm.DB, username string) (UserInfo, error) {
 	var userinfo UserInfo
-	err := db.First(&userinfo, "username = ?", username).Error
+	err := db.Where("username = ?", username).First(&userinfo).Error
 	if err != nil {
 		var invalid UserInfo
 		return invalid, err
