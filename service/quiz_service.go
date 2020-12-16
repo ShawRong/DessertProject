@@ -13,6 +13,7 @@ func Buildquiz(ctx iris.Context) {
 		ctx.StatusCode(iris.StatusOK)
 		data := ""
 		ctx.JSON(model.Response{Status: false, Data: data})
+		return
 	}
 	var quizinfo datasource.QuizInfo
 	quizinfo.QuizNum = quiz.Num

@@ -104,6 +104,7 @@ func Buildwrongtopic(ctx iris.Context) {
 		ctx.StatusCode(iris.StatusOK)
 		data := ""
 		_, _ = ctx.JSON(model.Response{Status: false, Data: data})
+		return
 	}
 
 	ctx.StatusCode(iris.StatusOK)
