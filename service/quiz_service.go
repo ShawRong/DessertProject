@@ -52,28 +52,12 @@ func Getquiz(ctx iris.Context) {
 			ctx.JSON(model.Response{Status: false, Data: data})
 			return
 		} else {
+			type temp struct {
+				Status bool              `json:"status"`
+				Data   interface{}       `json:"data"`
+				Slice  []*model.Question `json:"slice"`
+			}
 			data := "OK"
-			ctx.JSON(model.Response{Status: false, Data: data})
-		}
-		var quiz model.Question
-		quiz.Num = quizinfo.QuizNum
-		quiz.Rank = quizinfo.QuizRank
-		quiz.X = quizinfo.X
-		quiz.Y = quizinfo.Y
-		quiz.Sig = quizinfo.Sig
-		quiz.Res = quizinfo.Res
-		ctx.JSON(quiz)
-	} else if info.Num == "" && info.Rank != "" {
-		quizinfos, err := datasource.DBfind_quiz_byRank(datasource.Quizdb, info.Rank)
-		if err != nil {
-			data := "Not Found"
-			ctx.JSON(model.Response{Status: false, Data: data})
-			return
-		} else {
-			data := "OK"
-			ctx.JSON(model.Response{Status: false, Data: data})
-		}
-		for _, quizinfo := range quizinfos {
 			var quiz model.Question
 			quiz.Num = quizinfo.QuizNum
 			quiz.Rank = quizinfo.QuizRank
@@ -81,11 +65,39 @@ func Getquiz(ctx iris.Context) {
 			quiz.Y = quizinfo.Y
 			quiz.Sig = quizinfo.Sig
 			quiz.Res = quizinfo.Res
-			ctx.JSON(quiz)
+			var slice []*model.Question
+			slice = append(slice, &quiz)
+			ctx.JSON(temp{Status: true, Data: data, Slice: slice})
+		}
+	} else if info.Num == "" && info.Rank != "" {
+		quizinfos, err := datasource.DBfind_quiz_byRank(datasource.Quizdb, info.Rank)
+		if err != nil {
+			data := "Not Found"
+			ctx.JSON(model.Response{Status: false, Data: data})
+			return
+		} else {
+			type temp struct {
+				Status bool              `json:"status"`
+				Data   interface{}       `json:"data"`
+				Slice  []*model.Question `json:"slice"`
+			}
+			data := "OK"
+			var slice []*model.Question
+			for _, quizinfo := range quizinfos {
+				var quiz model.Question
+				quiz.Num = quizinfo.QuizNum
+				quiz.Rank = quizinfo.QuizRank
+				quiz.X = quizinfo.X
+				quiz.Y = quizinfo.Y
+				quiz.Sig = quizinfo.Sig
+				quiz.Res = quizinfo.Res
+				slice = append(slice, &quiz)
+			}
+			ctx.JSON(temp{Status: true, Data: data, Slice: slice})
 		}
 	} else {
 		data := "Wrong Format"
-		ctx.JSON(model.Response{Status: false, Data: data})
+		ctx.JSON(model.Response{Status: true, Data: data})
 	}
 	return
 }

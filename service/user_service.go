@@ -73,24 +73,30 @@ func Findwrongtopic(ctx iris.Context) {
 		_, _ = ctx.JSON(model.Response{Status: true, Data: data})
 		return
 	} else {
-		data := "Found"
-		_, _ = ctx.JSON(model.Response{Status: true, Data: data})
-	}
-	for _, wrongtopic := range wrongtopics {
-		quizinfo, err := datasource.DBfind_quiz(datasource.Quizdb, wrongtopic.QuizNum)
-		if err != nil {
-			panic(err)
+		type temp struct {
+			Status bool              `json:"status"`
+			Data   interface{}       `json:"data"`
+			Slice  []*model.Question `json:"slice"`
 		}
-		num := quizinfo.QuizNum
-		rank := quizinfo.QuizRank
-		x := quizinfo.X
-		y := quizinfo.Y
-		sig := quizinfo.Sig
-		res := quizinfo.Res
 
-		_, _ = ctx.JSON(model.Question{Num: num, Rank: rank, X: x, Y: y, Sig: sig, Res: res})
+		data := "Found"
+		var slice []*model.Question
+		for _, wrongtopic := range wrongtopics {
+			quizinfo, err := datasource.DBfind_quiz(datasource.Quizdb, wrongtopic.QuizNum)
+			if err != nil {
+				panic(err)
+			}
+			var quiz model.Question
+			quiz.Num = quizinfo.QuizNum
+			quiz.Rank = quizinfo.QuizRank
+			quiz.X = quizinfo.X
+			quiz.Y = quizinfo.Y
+			quiz.Sig = quizinfo.Sig
+			quiz.Res = quizinfo.Res
+			slice = append(slice, &quiz)
+		}
+		_, _ = ctx.JSON(temp{Status: true, Data: data, Slice: slice})
 	}
-
 	return
 }
 
