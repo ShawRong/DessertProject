@@ -43,7 +43,7 @@ func Getquiz(ctx iris.Context) {
 		data := ""
 		ctx.JSON(model.Response{Status: false, Data: data})
 	}
-	if info.Num != "" {
+	if info.Num != "" && info.Rank == "" {
 		quizinfo, err := datasource.DBfind_quiz(datasource.Quizdb, info.Num)
 		if err != nil {
 			data := "Not Found"
@@ -61,7 +61,7 @@ func Getquiz(ctx iris.Context) {
 		quiz.Sig = quizinfo.Sig
 		quiz.Res = quizinfo.Res
 		ctx.JSON(quiz)
-	} else {
+	} else if info.Num == "" && info.Rank != "" {
 		quizinfos, err := datasource.DBfind_quiz_byRank(datasource.Quizdb, info.Rank)
 		if err != nil {
 			data := "Not Found"
@@ -81,6 +81,9 @@ func Getquiz(ctx iris.Context) {
 			quiz.Res = quizinfo.Res
 			ctx.JSON(quiz)
 		}
+	} else {
+		data := "Wrong Format"
+		ctx.JSON(model.Response{Status: false, Data: data})
 	}
 	return
 }
