@@ -69,6 +69,19 @@ func DBupdate_quiz(db *gorm.DB, quiznum string, quizinfo QuizInfo) error {
 	return nil
 }
 
+func DBdelete_quiz(db *gorm.DB, quiznum string) error {
+	var quiz QuizInfo
+	err := db.Where("quiz_num = ?", quiznum).First(&quiz).Error
+	if err != nil {
+		return err
+	}
+	err1 := db.Delete(&quiz).Error
+	if err1 != nil {
+		return err1
+	}
+	return nil
+}
+
 func DBclose_quiz(db *gorm.DB) {
 	db.Close()
 }

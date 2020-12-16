@@ -42,6 +42,7 @@ func Getquiz(ctx iris.Context) {
 		ctx.StatusCode(iris.StatusOK)
 		data := ""
 		ctx.JSON(model.Response{Status: false, Data: data})
+		return
 	}
 	if info.Num != "" && info.Rank == "" {
 		quizinfo, err := datasource.DBfind_quiz(datasource.Quizdb, info.Num)
@@ -86,4 +87,23 @@ func Getquiz(ctx iris.Context) {
 		ctx.JSON(model.Response{Status: false, Data: data})
 	}
 	return
+}
+
+func Deletequiz(ctx iris.Context) {
+	var quiznum string
+	if err := ctx.ReadJSON(&quiznum); err != nil {
+		ctx.StatusCode(iris.StatusOK)
+		data := ""
+		ctx.JSON(model.Response{Status: false, Data: data})
+		return
+	}
+	ctx.StatusCode(iris.StatusOK)
+	err := datasource.DBdelete_quiz(datasource.Quizdb, quiznum)
+	if err != nil {
+		data := "delete error"
+		ctx.JSON(model.Response{Status: true, Data: data})
+	} else {
+		data := "OK"
+		ctx.JSON(model.Response{Status: true, Data: data})
+	}
 }
