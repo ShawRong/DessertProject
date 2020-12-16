@@ -1,24 +1,32 @@
 package controller
 
 import (
-	"github.com/kataras/iris/v12"
 	"dessert/service"
+
+	"github.com/kataras/iris/v12"
 )
 
-func HubController(app *iris.Application){
-	
+func HubController(app *iris.Application) {
+
 	/*router main*/
 	main := app.Party("/")
-	
+
 	/*router home*/
 	home := main.Party("/")
-	home.Get("/", func(ctx iris.Context){
+	home.Get("/", func(ctx iris.Context) {
 		ctx.View("index.html")
 	})
 
 	/*router user*/
 	user := main.Party("/user")
-	user.Post("/registe",service.Registe)
-	user.Post("/login",service.Login)
-	
+	user.Post("/registe", service.Registe)
+	user.Post("/login", service.Login)
+	user.Get("/findwrongtopic", service.Findwrongtopic)
+	user.Get("/buildwrongtopic", service.Buildwrongtopic)
+
+	/*router admin*/
+	admin := main.Party("/admin")
+	admin.Post("buildquiz", service.Buildquiz)
+	admin.Get("getquiz", service.Getquiz)
+
 }
