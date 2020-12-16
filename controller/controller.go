@@ -29,4 +29,5 @@ func HubController(app *iris.Application) {
 	admin := main.Party("/admin")
 	admin.Post("/buildquiz", service.Buildquiz)
 	admin.Post("/deletequiz", service.Deletequiz)
+	admin.Get("/getquiz", service.Getquiz)
 }

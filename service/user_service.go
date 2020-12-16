@@ -96,8 +96,8 @@ func Findwrongtopic(ctx iris.Context) {
 
 func Buildwrongtopic(ctx iris.Context) {
 	type topicer struct {
-		model.User     `json:"user"`
-		model.Question `json:"question"`
+		model.User
+		model.Question
 	}
 	topic := new(topicer)
 	if err := ctx.ReadJSON(&topic); err != nil {
