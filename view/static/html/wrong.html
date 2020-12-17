@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+		<title>wrong</title>
+		<script src="../js/vue.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<style>
+			body
+			{
+				background-color: #2d3a4b;
+				color: white;
+			}
+			* {
+			   margin:0;
+			   padding:0;
+			}
+			.logininput
+			{
+				margin: 20px;
+				height: 30px;
+				width: 350px;
+				font-size: x-large;
+			}
+			.loginbutton
+			{
+				width: 140px;
+				background-color: white;
+				border-color: lightblue;
+				height: 30px;
+				margin: 20px;
+				font-size: large;
+				transition-duration: 0.4s;
+				cursor: pointer;
+			}
+			.loginbutton:hover
+			{
+				background-color: lightblue;
+				color: white;
+			}
+			.puzzleinput
+			{
+				width: 50px;
+				height: 30px;
+				font-size: x-large;
+			}
+			.puzzle
+			{
+				font-size: xx-large;
+				margin: auto;
+				margin-top: 50px;
+				padding: 10px;
+				text-align: center;
+				width: 1500px;
+			}
+			.topnav {
+				height: 50px;
+				background-color: #333;
+			}
+			.topnav a {
+			  float: left;
+			  display: block;
+			  color: #f2f2f2;
+			  text-align: center;
+			  padding: 14px 16px;
+			  text-decoration: none;
+			}
+			.topnav a:hover {
+			  background-color: #ddd;
+			  color: black;
+			}
+			.paper{
+				width: max-content;
+				background-color: #DDDDDD;
+				margin-left: 20%;
+				margin-top: 50px;
+				padding-bottom: 10px;
+				min-height: 200px;
+			}
+			.paper h1
+			{
+				color: #000000;
+			}
+			.msgblock
+			{
+				margin-left: 30px;
+				
+			}
+			.msg
+			{
+				color: #000000;
+				font-size: 25px;
+			}
+			.msg1
+			{
+				position: relative;
+				top: -90px;
+				left: 350px;
+			}
+			.remsg
+			{
+				margin-top: 25px;
+				margin-left: 50px;
+			}
+			.topnav1 {
+				height: 50px;
+				background-color: #333;
+			}
+			.buttonhover{
+				margin: 0px;
+				float: left;
+				display: block;
+				text-align: center;
+				padding: 14px 16px;
+				text-decoration: none;
+				background-color: #ddd;
+				color: black;
+			}
+			.buttoninit
+			{
+				margin: 0px;
+				float: left;
+				display: block;
+				color: #f2f2f2;
+				text-align: center;
+				padding: 14px 16px;
+				text-decoration: none;
+			}
+			.buttoninit:hover
+			{
+				background-color: #ddd;
+				color: black;
+			}
+			.listline
+			{
+				margin-left: 100px;
+				margin-bottom: 20px;
+			}
+			.list
+			{
+				width: 100%;
+				margin: 20px;
+				text-align: left;
+				column-count: 3;
+				column-rule-style: solid;
+				color: #000000;
+				font-size: large;
+			}
+			.puzzleline
+			{
+				background-color: ;
+				width: 170px;
+				float: left;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div class="topnav">
+			  <a href="#" style="margin-left: 15%" v-on:click="gocenter">个人中心</a>
+			  <a href="#" v-on:click="gouser">做题中心</a>
+			  <a href="#">错题集</a>
+			  <a href="#">留言板</a>
+			  <a href="#" style="float: right;margin-right: 50px;" v-on:click="goindex">退出登录</a>
+			</div>
+			<div class="paper">
+				<div style="width: max-content;" class="topnav1">
+					<a href="#" style="width: 250px;" v-bind:class="{'buttonhover':use11,'buttoninit':use12,'buttoninit :hover':use12}" v-on:click="button1">初级</a>
+					<a href="#" style="width: 250px;" v-bind:class="{'buttonhover':use21,'buttoninit':use22,'buttoninit :hover':use22}" v-on:click="button2">中级</a>
+					<a href="#" style="width: 250px;" v-bind:class="{'buttonhover':use31,'buttoninit':use32,'buttoninit :hover':use32}" v-on:click="button3">高级</a>
+					<a href="#" style="width: 250px;" v-bind:class="{'buttonhover':use41,'buttoninit':use42,'buttoninit :hover':use42}" v-on:click="button4">困难</a>
+				</div>
+				<div class="wronglist">
+					<ol class="list" v-if="use11">
+						<li v-for="(list,index) in puzzlelists1" class="listline">
+							<div class="puzzleline"><span v-text="list.puzzle"></span></div>							
+						</li>
+					</ol>
+					<ol class="list" v-if="use21">
+						<li v-for="(list,index) in puzzlelists2" class="listline">
+							<div class="puzzleline"><span v-text="list.puzzle"></span></div>							
+						</li>
+					</ol>
+					<ol class="list" v-if="use31">
+						<li v-for="(list,index) in puzzlelists3" class="listline">
+							<div class="puzzleline"><span v-text="list.puzzle"></span></div>							
+						</li>
+					</ol>
+					<ol class="list" v-if="use41">
+						<li v-for="(list,index) in puzzlelists4" class="listline">
+							<div class="puzzleline"><span v-text="list.puzzle"></span></div>		
+						</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+		<script>
+			var root = new Vue({
+				el:'#app',
+				data:{
+					x:'1',
+					y:'1',
+					sig:'+',
+					res:'2',
+					username:'',
+					use11:true,
+					use12:false,
+					use21:false,
+					use22:true,
+					use31:false,
+					use32:true,
+					use41:false,
+					use42:true,
+					puzzlelists1:[
+						
+					],
+					puzzlelists2:[
+						
+					],
+					puzzlelists3:[
+						
+					],
+					puzzlelists4:[
+						
+					],
+					seq:0,
+					n:0,
+					seen:false
+				},
+				methods:{
+					getpuzzle:function()
+					{
+						this.seen=true;
+					},
+					goperson:function()
+					{
+						
+					},
+					clean:function()
+					{
+						this.use11=false;
+						this.use12=true;
+						this.use21=false;
+						this.use22=true;
+						this.use31=false;
+						this.use32=true;
+						this.use41=false;
+						this.use42=true;
+					},
+					button1:function()
+					{
+						this.clean();
+						this.use11=true;
+						this.use12=false;
+					},
+					button2:function()
+					{
+						this.clean();
+						this.use21=true;
+						this.use22=false;
+					},
+					button3:function()
+					{
+						this.clean();
+						this.use31=true;
+						this.use32=false;
+					},
+					button4:function()
+					{
+						this.clean();
+						this.use41=true;
+						this.use42=false;
+					},
+					gocenter:function(){
+					
+						location.href = './center.html'
+					},
+					gouser:function(){
+						location.href = './user.html'
+					},
+					goindex:function(){
+						root.cleancookie("username","/")
+						location.href = '../../'
+					},
+					setcookie:function(cname,cvalue,cpath){
+						var path = "path="+cpath;
+					  document.cookie = cname + "=" + cvalue + ";" + path ;
+					},
+					getcookie:function(cname){
+					  var name = cname + "=";
+					  var ca = document.cookie.split(';');
+					  for(var i=0; i<ca.length; i++) 
+					  {
+						var c = ca[i].trim();
+						if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+					  }
+					  return "";
+					},
+					cleancookie:function(cname,cpath){
+						var exp = new Date();
+						exp.setTime(exp.getTime() - 1);
+						var path = ";path=" + cpath;
+						document.cookie= cname + "="+";expires="+exp.toGMTString() + path;
+					},
+				},
+				created:function(){
+					this.username=this.getcookie("username")
+					if(this.username=="")
+					{
+						location.href = '../../'
+					}
+					else
+					{
+						axios.post("/user/findwrongtopic",
+					{
+						username:this.username
+					}).then(function(res){
+						root.puzzlelists1.splice(0,root.puzzlelists1.length)
+						root.puzzlelists2.splice(0,root.puzzlelists2.length)
+						root.puzzlelists3.splice(0,root.puzzlelists3.length)
+						root.puzzlelists4.splice(0,root.puzzlelists4.length)
+						if(res.data.data == "Found")
+						{
+							for(var i in res.data.slice)
+							{
+								var temp = res.data.slice[i].x+res.data.slice[i].sig+res.data.slice[i].y+'='+res.data.slice[i].res;
+								if(res.data.slice[i].rank == "1")
+								{
+									root.puzzlelists1.push({
+										puzzle:temp,
+									})
+								}
+								if(res.data.slice[i].rank == "2")
+								{
+									root.puzzlelists2.push({
+										puzzle:temp,
+									})
+								}
+								if(res.data.slice[i].rank == "3")
+								{
+									root.puzzlelists3.push({
+										puzzle:temp,
+									})
+								}
+								if(res.data.slice[i].rank == "4")
+								{
+									root.puzzlelists4.push({
+										puzzle:temp,
+									})
+								}
+							}
+						}
+					}).catch(function(err){
+						console.log("请求失败")
+					});
+					}
+					
+				},
+			})
+			
+		</script>
+	</body>
+</html>

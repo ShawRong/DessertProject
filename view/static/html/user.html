@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html style="width: 100%;">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+		<title>user</title>
+		<script src="../js/vue.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<style>
+			body
+			{
+				background-color: #2d3a4b;
+				color: white;
+			}
+			* {
+			   margin:0;
+			   padding:0;
+			}
+			.loginbutton
+			{
+				width: 140px;
+				background-color: white;
+				border-color: lightblue;
+				height: 30px;
+				margin: 20px;
+				font-size: large;
+				transition-duration: 0.4s;
+				cursor: pointer;
+			}
+			.loginbutton:hover
+			{
+				background-color: lightblue;
+				color: white;
+			}
+			.puzzleinput
+			{
+				width: 50px;
+				height: 30px;
+				font-size: x-large;
+			}
+			.puzzle
+			{
+				font-size: xx-large;
+				margin: auto;
+				margin-top: 50px;
+				padding: 10px;
+				text-align: center;
+				width: 1500px;
+			}
+			.listline
+			{
+				margin-left: 100px;
+				margin-bottom: 20px;
+			}
+			.list
+			{
+				width: 100%;
+				margin: 20px;
+				text-align: left;
+				column-count: 3;
+				column-rule-style: solid;
+			}
+			.puzzleline
+			{
+				background-color: ;
+				width: 170px;
+				float: left;
+			}
+			.topnav {
+				height: 50px;
+			  background-color: #333;
+			}
+			.topnav a {
+			  float: left;
+			  display: block;
+			  color: #f2f2f2;
+			  text-align: center;
+			  padding: 14px 16px;
+			  text-decoration: none;
+			}
+			.topnav a:hover {
+			  background-color: #ddd;
+			  color: black;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div class="topnav">
+			  <a href="#" style="margin-left: 15%" v-on:click="gocenter">个人中心</a>
+			  <a href="#">做题中心</a>
+			  <a href="#" v-on:click="gowrong">错题集</a>
+			  <a href="#">留言板</a>
+			  <a href="#" style="float: right;margin-right: 50px;" v-on:click="goindex">退出登录</a>
+			</div>
+			<div>
+				<div id="puzzle1" class="puzzle">
+					<form style="float: left;margin-left: 5%;margin-bottom: 50px;">
+						<span style="font-size: 20px">难度：</span>
+					<select id="degree" style="width: 100px;height: 25px;font-size: large;" v-model="rank">
+					<option value="1" selected>初级</option>
+					<option value="2">中级</option>
+					<option value="3">高级</option>
+					<option value="4">困难</option>
+					</select>
+					<button id="button2" class="loginbutton" v-on:click="getpuzzle" type="button">生成</button>
+					</form>
+					
+					<ol class="list" v-if="seen">
+						<li v-for="(list,index) in puzzlelists" class="listline">
+							<div class="puzzleline"><span v-text="list.puzzle"></span></div>							
+							<input type="text" class="puzzleinput" pattern="([0-9])*(\.)?([0-9])+" v-model="list.input"/>
+							<span v-text="list.istrue"></span>
+						</li>
+					</ol>
+					<button id="button1" class="loginbutton" v-on:click="jug" v-if="seen" type="button">提交</button>
+					<br />
+				</div>
+			</div>
+		</div>
+		<script>
+			var root = new Vue({
+				el:'#app',
+				data:{
+					username:'',
+					x:'1',
+					y:'1',
+					sig:'+',
+					res:'2',
+					rank:'1',
+					puzzlelists:[
+						
+					],
+					seq:0,
+					n:0,
+					seen:false,
+					
+				},
+				methods:{
+					jug:function()
+					{
+						for(var i=0;i<root.puzzlelists.length;i++)
+						{
+							if(root.puzzlelists[i].input==root.puzzlelists[i].res)
+							{
+								root.puzzlelists[i].istrue='true';
+							}
+							else
+							{
+								root.puzzlelists[i].istrue='flase';
+								axios.post("/user/buildwrongtopic",
+								{
+									username:root.username,
+									num:root.puzzlelists[i].num
+								}).then(function(res){
+									
+								}).catch(function(err){
+								console.log("请求失败")
+							});
+							}
+						}
+					},
+					getpuzzle:function()
+					{
+
+						axios.post("/user/getquiz",
+						{
+							rank:this.rank
+						}).then(function(res){
+							if(res.data.data == "OK")
+							{
+								root.puzzlelists.splice(0,root.puzzlelists.length)
+								if(res.data.slice.length <= 30)
+								{
+									for(var i in res.data.slice)
+									{
+										var temp = res.data.slice[i].x+res.data.slice[i].sig+res.data.slice[i].y+'=';
+										var tmp = root.puzzlelists.push({
+											puzzle:temp,
+											res:res.data.slice[i].res,
+											istrue:'',
+											input:'',
+											num:res.data.slice[i].num,
+										})
+									}
+								}
+								else
+								{
+									for(var i=0;i<30;i++)
+									{
+										var temp = res.data.slice[i].x+res.data.slice[i].sig+res.data.slice[i].y+'=';
+										var tmp = root.puzzlelists.push({
+											puzzle:temp,
+											res:res.data.slice[i].res,
+											istrue:'',
+											input:'',
+											num:res.data.slice[i].num,
+										})
+									}
+								}
+								root.seen=true;
+							}
+							if(res.data.data == "Not Found")
+							{
+								root.puzzlelists.splice(0,root.puzzlelists.length)
+								root.seen=false;
+								alert("题库无此难度题")
+							}
+						}).catch(function(err){
+							console.log("请求失败")
+						});
+						
+					},
+					setcookie:function(cname,cvalue,cpath){
+						var path = "path="+cpath;
+					  document.cookie = cname + "=" + cvalue + ";" + path ;
+					},
+					getcookie:function(cname){
+					  var name = cname + "=";
+					  var ca = document.cookie.split(';');
+					  for(var i=0; i<ca.length; i++) 
+					  {
+						var c = ca[i].trim();
+						if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+					  }
+					  return "";
+					},
+					cleancookie:function(cname,cpath){
+						var exp = new Date();
+						exp.setTime(exp.getTime() - 1);
+						var path = ";path=" + cpath;
+						document.cookie= cname + "="+";expires="+exp.toGMTString() + path;
+					},
+					gocenter:function(){
+					
+						location.href = './center.html'
+					},
+					gowrong:function(){
+						location.href = './wrong.html'
+					},
+					goindex:function(){
+						root.cleancookie("username","/")
+						location.href = '../../'
+					},
+				},
+				created:function(){
+					this.username=this.getcookie("username")
+					if(this.username=="")
+					{
+						location.href = '../../'
+					}
+				}
+			})
+		</script>
+	</body>
+</html>
