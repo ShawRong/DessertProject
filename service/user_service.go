@@ -99,11 +99,11 @@ func Findwrongtopic(ctx iris.Context) {
 }
 
 func Buildwrongtopic(ctx iris.Context) {
-	type topicer struct {
-		model.User
-		model.Question
+	type temp struct {
+		QuizNum  string `json:"num"`
+		Username string `json:"username"`
 	}
-	topic := new(topicer)
+	topic := new(temp)
 	if err := ctx.ReadJSON(&topic); err != nil {
 		ctx.StatusCode(iris.StatusOK)
 		data := ""
@@ -113,9 +113,32 @@ func Buildwrongtopic(ctx iris.Context) {
 
 	ctx.StatusCode(iris.StatusOK)
 	var wrongtopic datasource.WrongTopic
-	wrongtopic.QuizNum = topic.Num
+	wrongtopic.QuizNum = topic.QuizNum
 	wrongtopic.Username = topic.Username
 	datasource.DBcreate_topic(datasource.WrongTopicdb, wrongtopic)
 	data := "OK"
 	_, _ = ctx.JSON(model.Response{Status: true, Data: data})
+}
+
+func Deletetopic(ctx iris.Context) {
+	type temp struct {
+		QuizNum  string `json:"num"`
+		Username string `json:"username"`
+	}
+	topic := new(temp)
+	if err := ctx.ReadJSON(&topic); err != nil {
+		ctx.StatusCode(iris.StatusOK)
+		data := ""
+		ctx.JSON(model.Response{Status: false, Data: data})
+		return
+	}
+	ctx.StatusCode(iris.StatusOK)
+	err := datasource.DBdelete_topic(datasource.WrongTopicdb, topic.Username, topic.QuizNum)
+	if err != nil {
+		data := "delete error"
+		ctx.JSON(model.Response{Status: true, Data: data})
+	} else {
+		data := "OK"
+		ctx.JSON(model.Response{Status: true, Data: data})
+	}
 }

@@ -23,7 +23,8 @@ func HubController(app *iris.Application) {
 	user.Post("/login", service.Login)
 	user.Post("/findwrongtopic", service.Findwrongtopic)
 	user.Post("/buildwrongtopic", service.Buildwrongtopic)
-	user.Get("/getquiz", service.Getquiz)
+	user.Post("/getquiz", service.Getquiz)
+	user.Post("/deletetopic,", service.Deletetopic)
 
 	/*router admin*/
 	admin := main.Party("/admin")
