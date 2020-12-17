@@ -89,9 +89,7 @@ func Findwrongtopic(ctx iris.Context) {
 			var quiz model.Question
 			quiz.Num = quizinfo.QuizNum
 			quiz.Rank = quizinfo.QuizRank
-			quiz.X = quizinfo.X
-			quiz.Y = quizinfo.Y
-			quiz.Sig = quizinfo.Sig
+			quiz.Content = quizinfo.Content
 			quiz.Res = quizinfo.Res
 			slice = append(slice, &quiz)
 		}

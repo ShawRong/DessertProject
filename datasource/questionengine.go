@@ -10,9 +10,7 @@ import (
 type QuizInfo struct {
 	QuizNum  string `gorm:"primary_key"`
 	QuizRank string
-	X        string
-	Y        string
-	Sig      string
+	Content  string
 	Res      string
 }
 

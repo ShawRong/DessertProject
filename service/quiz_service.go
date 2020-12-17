@@ -18,9 +18,7 @@ func Buildquiz(ctx iris.Context) {
 	var quizinfo datasource.QuizInfo
 	quizinfo.QuizNum = quiz.Num
 	quizinfo.QuizRank = quiz.Rank
-	quizinfo.X = quiz.X
-	quizinfo.Y = quiz.Y
-	quizinfo.Sig = quiz.Sig
+	quizinfo.Content = quiz.Content
 	quizinfo.Res = quiz.Res
 
 	err := datasource.DBcreate_quiz(datasource.Quizdb, quizinfo)
@@ -61,9 +59,7 @@ func Getquiz(ctx iris.Context) {
 			var quiz model.Question
 			quiz.Num = quizinfo.QuizNum
 			quiz.Rank = quizinfo.QuizRank
-			quiz.X = quizinfo.X
-			quiz.Y = quizinfo.Y
-			quiz.Sig = quizinfo.Sig
+			quiz.Content = quizinfo.Content
 			quiz.Res = quizinfo.Res
 			var slice []*model.Question
 			slice = append(slice, &quiz)
@@ -87,9 +83,7 @@ func Getquiz(ctx iris.Context) {
 				var quiz model.Question
 				quiz.Num = quizinfo.QuizNum
 				quiz.Rank = quizinfo.QuizRank
-				quiz.X = quizinfo.X
-				quiz.Y = quizinfo.Y
-				quiz.Sig = quizinfo.Sig
+				quiz.Content = quizinfo.Content
 				quiz.Res = quizinfo.Res
 				slice = append(slice, &quiz)
 			}
