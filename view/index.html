@@ -10,20 +10,42 @@
 	</head>
 	<body>
 		<div id="ta">
-			<div class="login">
-				<p class="logintext">login</p>
-				<table border="0" >
+			<div class="login" v-if="seen">
+				<p class="logintext" v-text="title"></p>
+				<table border="0" style="position: relative;left: 120px;">
 					<tr>
 						<td>用户名</td>
 						<td> <input type="text" class="logininput" v-model="usrname"/> </td>
+						<td style="color: red;" v-if="usrwrong">×用户名不存在</td>
 					</tr>
 					<tr>
 						<td>密码</td>
 						<td><input type="password" class="logininput" v-model="pwd"/> </td>
+						<td style="color: red;" v-if="pwdwrong">×密码错误</td>
 					</tr>
 				</table>
 				<input type="button" class="loginbutton" value="登录" v-on:click="login"/>
 				<input type="button" class="loginbutton" value="注册" v-on:click="signup"/>
+			</div>
+			<div class="login" v-if="seen1">
+				<p class="logintext" v-text="title"></p>
+				<table border="0" style="position: relative;left: 100px;">
+					<tr>
+						<td>用户名</td>
+						<td> <input type="text" class="logininput" v-model="usrname1"/> </td>
+					</tr>
+					<tr>
+						<td>密码</td>
+						<td><input type="password" class="logininput" v-model="pwd1"/> </td>
+					</tr>
+					<tr>
+						<td>确认密码</td>
+						<td><input type="password" class="logininput" v-model="cfpwd1"/> </td>
+						<td style="color: red;" v-if="cfpwdwrong">×两次输入密码不一致</td>
+					</tr>
+				</table>
+				<input type="button" class="loginbutton" value="返回" v-on:click="back"/>
+				<input type="button" class="loginbutton" value="确认注册" v-on:click="cfsignup"/>
 			</div>
 		</div>
 		<script>
@@ -36,38 +58,94 @@
 					msg2:'',
 					msg:'',
 					homeurl:'',
+					usrname1:'',
+					pwd1:'',
+					cfpwd1:'',
+					seen:true,
+					seen1:false,
+					pwdwrong:false,
+					usrwrong:false,
+					cfpwdwrong:false,
+					title:'login',
 				},
 				methods:{
 					login:function(){
 						this.msg1 = '用户名：'+this.usrname+'\n';
 						this.msg2 = '密码：'+this.pwd;
 						this.msg = this.msg1 + this.msg2;
-						alert(this.msg);
-						axios.post("/login",
+						axios.post("/user/login",
 						{
-							usrname:this.usrname,
-							pwd:this.pwd
+							username:this.usrname,
+							password:this.pwd
 						}).then(function(res){
 							if(res.data.data == "Nice")
 							{
-								root.homeurl = '/user/' + root.usrname + '/home/user.html';
-								axios.get(root.homeurl,
-								{
-									
-								}).then(function(res){
-									location.href = window.location.href + 'user/' + root.usrname + '/home/user.html'
-								}).catch(function(err){
-									
-								})
+								root.setcookie('username',root.usrname,"/")
+								location.href = window.location.href + 'static/html/center.html'
 							}
-							else
+							if(res.data.data == "Bad")
 							{
-								alert("error")
+								this.pwdwrong=true;
+								this.usrwrong=false;
+							}
+							if(res.data.data == "NotFound")
+							{
+								this.pwdwrong=false;
+								this.usrwrong=true;
 							}
 						}).catch(function(err){
 							console.log("请求失败")
 						});
-					}
+					},
+					signup:function(){
+						this.seen=false;
+						this.seen1=true;
+						this.title='sign up';
+					},
+					back:function(){
+						this.seen=true;
+						this.seen1=false;
+						this.title='login';
+					},
+					cfsignup:function(){
+						if(this.pwd1==this.cfpwd1)
+						{
+							axios.post("/user/registe",
+							{
+								username:this.usrname1,
+								password:this.pwd1
+							}).then(function(res){
+								if(res.data.data == "Nice")
+								{
+									alert("注册成功！");
+									root.setcookie('username',root.usrname1,"/")
+									location.href = window.location.href + 'static/html/center.html'
+								}
+								if(res.data.data == "Exist")
+								{
+									alert("用户已存在！");
+								}
+							}).catch(function(err){
+								console.log("请求失败")
+							});
+						}
+						else
+						{
+							this.cfpwdwrong=true;
+						}
+					},setcookie:function(cname,cvalue,cpath){
+						var path = "path="+cpath;
+					  document.cookie = cname + "=" + cvalue + ";" + path ;
+					},getcookie:function(cname){
+					  var name = cname + "=";
+					  var ca = document.cookie.split(';');
+					  for(var i=0; i<ca.length; i++) 
+					  {
+						var c = ca[i].trim();
+						if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+					  }
+					  return "";
+					},
 				}
 			})
 		</script>
