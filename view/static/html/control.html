@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+		<title>control</title>
+		<script src="../js/vue.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<style>
+			body
+			{
+				background-color: #2d3a4b;
+				color: white;
+			}
+			* {
+			   margin:0;
+			   padding:0;
+			}
+			.logininput
+			{
+				margin: 20px;
+				height: 30px;
+				width: 350px;
+				font-size: x-large;
+			}
+			.loginbutton
+			{
+				width: 140px;
+				background-color: white;
+				border-color: lightblue;
+				height: 30px;
+				margin: 20px;
+				font-size: large;
+				transition-duration: 0.4s;
+				cursor: pointer;
+			}
+			.loginbutton:hover
+			{
+				background-color: lightblue;
+				color: white;
+			}
+			.paper{
+				width: max-content;
+				background-color: #ffffff;
+				margin-left: 15%;
+				margin-top: 50px;
+				padding-bottom: 100px;
+				min-height: 200px;
+				width: 70%;
+			}
+			.paper h1
+			{
+				color: #000000;
+			}
+			.block
+			{
+				padding-top: 25px;
+				margin-left: 30px;
+				float: left;
+			}
+			.table
+			{
+				margin-left: 50px;
+				font-size: 25px;
+				margin-top: 25px;
+				color: #000000;
+			}
+			.idinput
+			{
+				width: 50px;
+				height: 30px;
+				margin: 20px;
+				margin-left: 0px;
+				font-size: x-large;
+			}
+			.contentinput
+			{
+				width: 200px;
+				height: 30px;
+				margin: 20px;
+				margin-left: 0px;
+				font-size: x-large;
+			}
+			.resinput
+			{
+				width: 100px;
+				height: 30px;
+				margin: 20px;
+				margin-left: 0px;
+				font-size: x-large;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div class="paper" id="paper1">
+				<div class="block">
+					<h1>题库添加:</h1>
+					<div>
+						<table border="0" class="table">
+							<tr>
+								<td style="font-size: xx-large;"></td>
+								<td >rank</td>
+								<td width="50px">ID</td>
+								<td width="200px">题干</td>
+								<td width="50px"></td>
+								<td width="100px">结果</td>
+							</tr>
+							<tr>
+								<td style="font-size: xx-large;width: 50px;">1</td>
+								<td width="50px"><input type="text" class="idinput" v-model="addrank"/></td>
+								<td width="50px"><input type="text" class="idinput" v-model="addnum"/></td>
+								<td width="200px"><input type="text" class="contentinput" v-model="addcont"/></td>
+								<td style="font-size: xx-large;">=</td>
+								<td width="100px"><input type="text" class="resinput" v-model="addres"/></td>
+							</tr>
+						</table>
+						<input type="button" class="loginbutton" style="position: relative;left: 73%;" value="确认添加" v-on:click="addquiz"/>
+					</div>
+				</div>
+				<div id="line" style="float:left;margin-top: 30px;width: 1px;height: 100%; background: darkgray;"></div> 
+				<div class="block">
+					<h1>题目删除：</h1>
+					<div class="table">
+						<span>ID:</span>
+						<input type="text" class="contentinput" v-model="delnum"/>
+						<input type="button" class="loginbutton" value="确认删除" v-on:click="delquiz"/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			var root =new Vue({
+				el:'#app',
+				data:{
+					addrank:'',
+					addnum:'',
+					addcont:'',
+					addres:'',
+					delnum:'',
+				},
+				methods:{
+					addquiz:function(){
+						axios.post("/admin/buildquiz",
+							{
+								num:root.addnum,
+								rank:root.addrank,
+								content:root.addcont,
+								res:root.addres
+							}).then(function(res){
+								if(res.data.data=="OK")
+								{
+									alert("添加成功")
+								}
+								if(res.data.data=="Exist")
+								{
+									alert("题号重复")
+								}
+							}).catch(function(err){
+							console.log("请求失败")
+						});
+					},
+					delquiz:function(){
+						axios.post("/admin/deletequiz",
+							{
+								num:root.delnum
+							}).then(function(res){
+								if(res.data.data=="OK")
+								{
+									alert("删除成功")
+								}
+								if(res.data.data=="delete error")
+								{
+									alert("该题号不存在")
+								}
+							}).catch(function(err){
+							console.log("请求失败")
+						});
+					}
+				},
+				mounted:function(){
+					this.$nextTick(()=>{
+						var h1 = document.getElementById('paper1')
+						var h2 = document.getElementById('line')
+						h2.style.height = h1.offsetHeight - 50 + 'px'
+					})
+					
+				}
+			})
+
+		</script>
+	</body>
+</html>
