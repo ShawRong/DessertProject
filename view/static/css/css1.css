@@ -11,14 +11,14 @@ body
 {
 	margin: auto;
 	margin-top: 200px;
-	width: max-content;
+	width: 700px;
 	padding: 10px;
 	text-align: center;
 	font-size: larger;
 }
 .loginbutton
 {
-	width: 40%;
+	width: 185px;
 	background-color: white;
 	border-color: lightblue;
 	height: 30px;

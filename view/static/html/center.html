@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html style="width: 100%;">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+		<title>center</title>
+		<script src="../js/vue.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<style>
+			body
+			{
+				background-color: #2d3a4b;
+				color: white;
+			}
+			* {
+			   margin:0;
+			   padding:0;
+			}
+			.logininput
+			{
+				margin: 20px;
+				height: 30px;
+				width: 350px;
+				font-size: x-large;
+			}
+			.loginbutton
+			{
+				width: 140px;
+				background-color: white;
+				border-color: lightblue;
+				height: 30px;
+				margin: 20px;
+				font-size: large;
+				transition-duration: 0.4s;
+				cursor: pointer;
+			}
+			.loginbutton:hover
+			{
+				background-color: lightblue;
+				color: white;
+			}
+			.puzzleinput
+			{
+				width: 50px;
+				height: 30px;
+				font-size: x-large;
+			}
+			.puzzle
+			{
+				font-size: xx-large;
+				margin: auto;
+				margin-top: 50px;
+				padding: 10px;
+				text-align: center;
+				width: 1500px;
+			}
+			.topnav {
+				height: 50px;
+			  background-color: #333;
+			}
+			.topnav a {
+			  float: left;
+			  display: block;
+			  color: #f2f2f2;
+			  text-align: center;
+			  padding: 14px 16px;
+			  text-decoration: none;
+			}
+			.topnav a:hover {
+			  background-color: #ddd;
+			  color: black;
+			}
+			.paper{
+				width: 60%;
+				background-color: #DDDDDD;
+				margin-left: 20%;
+				margin-top: 50px;
+				padding-top: 20px;
+			}
+			.paper h1
+			{
+				color: #000000;
+			}
+			.msgblock
+			{
+				margin-left: 30px;
+				
+			}
+			.msg
+			{
+				color: #000000;
+				font-size: 25px;
+			}
+			.msg1
+			{
+				position: relative;
+				top: -90px;
+				left: 350px;
+			}
+			.remsg
+			{
+				margin-top: 25px;
+				margin-left: 50px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<div class="topnav">
+			  <a href="#" style="margin-left: 15%">个人中心</a>
+			  <a href="#" v-on:click="gouser">做题中心</a>
+			  <a href="#" v-on:click="gowrong">错题集</a>
+			  <a href="#">留言板</a>
+			  <a href="#" style="float: right;margin-right: 50px;" v-on:click="goindex">退出登录</a>
+			</div>
+			<div class="paper">
+				<div class="msgblock">
+					<h1>个人信息</h1>
+					<div class="msg">
+						<div style="margin-top: 40px;margin-left: 100px;width: 300px;">
+							<span>用户名:</span>
+							<span v-text="username"></span>
+						</div>
+						<div style="margin-top: 40px;margin-left: 100px;width: 200px;">
+							<span>综合正确率:</span>
+							<span v-text="corrate"></span>
+						</div>
+						<div style="margin-top: 40px;margin-left: 50px;width: 700px;font-size: 20px;" class="msg1">
+							<div style="display: inline-block;width: 330px;">
+								<span>初级难度正确率:</span>
+								<span v-text="corrate1" ></span>
+							</div>
+							<div style="display: inline-block;">
+								<span>初级难度已做题目:</span>
+								<span v-text="puzzlenum1" ></span>
+							</div>
+						</div>
+						<div style="margin-top: 40px;margin-left: 50px;width: 700px;font-size: 20px;" class="msg1">
+							<div style="display: inline-block;width: 330px;">
+								<span>中级难度正确率:</span>
+								<span v-text="corrate2" ></span>
+							</div>
+							<div style="display: inline-block;">
+								<span>中级难度已做题目:</span>
+								<span v-text="puzzlenum2" ></span>
+							</div>
+						</div>
+						<div style="margin-top: 40px;margin-left: 50px;width: 700px;font-size: 20px;" class="msg1">
+							<div style="display: inline-block;width: 330px;">
+								<span>高级难度正确率:</span>
+								<span v-text="corrate3" ></span>
+							</div>
+							<div style="display: inline-block;">
+								<span>高级难度已做题目:</span>
+								<span v-text="puzzlenum3" ></span>
+							</div>
+						</div>
+						<div style="margin-top: 40px;margin-left: 50px;width: 700px;font-size: 20px;" class="msg1">
+							<div style="display: inline-block;width: 330px;">
+								<span>困难难度正确率:</span>
+								<span v-text="corrate4" ></span>
+							</div>
+							<div style="display: inline-block;">
+								<span>困难难度已做题目:</span>
+								<span v-text="puzzlenum4" ></span>
+							</div>
+						</div>
+					</div>
+					<HR style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15)" width="96%"color=#000000 SIZE=1>
+				</div>
+				
+				<div class="msgblock" style="margin-top: 35px;">
+					<h1>密码修改</h1>
+					<div class="msg">
+						<div style="margin-top: 40px;margin-left: 100px;width: max-content;">
+							<table border="0" >
+								<tr>
+									<td>旧密码</td>
+									<td> <input type="password" class="logininput" v-model="oldpwd"/> </td>
+								</tr>
+								<tr>
+									<td>新密码</td>
+									<td><input type="password" class="logininput" v-model="newpwd"/> </td>
+								</tr>
+								<tr>
+									<td>确认密码</td>
+									<td><input type="password" class="logininput" v-model="cfpwd"/> </td>
+								</tr>
+							</table>
+							<input type="button" class="loginbutton" value="确认修改" style="margin-left: 650px;" v-on:click="cfchange"/>
+						</div>
+					</div>
+					<HR style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15)" width="96%"color=#000000 SIZE=1>
+					
+				</div>
+				<div class="msgblock" style="margin-top: 35px;height: 400px;">
+					<h1>留言</h1>
+					<div class="remsg">
+						<textarea style="resize: none;font-size: 25px;" rows="7" cols="70" v-model="text"></textarea>
+						<input type="button" class="loginbutton" value="提交" style="margin-left: 700px;" v-on:click="submsg"/>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			var root = new Vue({
+				el:'#app',
+				data:{
+					username:'',
+					corrate:'',
+					corrate1:'',
+					corrate2:'',
+					corrate3:'',
+					corrate4:'',
+					puzzlenum1:'',
+					puzzlenum2:'',
+					puzzlenum3:'',
+					puzzlenum4:'',
+					oldpwd:'',
+					newpwd:'',
+					cfpwd:'',
+					text:'',
+				},
+				methods:{
+					setcookie:function(cname,cvalue,cpath){
+						var path = "path="+cpath;
+					  document.cookie = cname + "=" + cvalue + ";" + path ;
+					},
+					getcookie:function(cname){
+					  var name = cname + "=";
+					  var ca = document.cookie.split(';');
+					  for(var i=0; i<ca.length; i++) 
+					  {
+						var c = ca[i].trim();
+						if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+					  }
+					  return "";
+					},
+					cleancookie:function(cname,cpath){
+						var exp = new Date();
+						exp.setTime(exp.getTime() - 1);
+						var path = ";path=" + cpath;
+						document.cookie= cname + "="+";expires="+exp.toGMTString() + path;
+					},
+					gouser:function(){
+
+						location.href = './user.html'
+					},
+					gowrong:function(){
+						location.href = './wrong.html'
+					},
+					goindex:function(){
+						root.cleancookie("username","/")
+						location.href = '../../'
+					},
+					submsg:function(){
+						
+					},
+					cfchange:function(){
+						
+					},
+
+				},
+				created:function(){
+					this.username=this.getcookie("username")
+					if(this.username=="")
+					{
+						location.href = '../../index.html'
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

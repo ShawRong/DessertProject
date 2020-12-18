@@ -97,7 +97,10 @@ func Getquiz(ctx iris.Context) {
 }
 
 func Deletequiz(ctx iris.Context) {
-	var quiznum string
+	type Quiznum struct {
+		Num string `json:"num"`
+	}
+	quiznum := new(Quiznum)
 	if err := ctx.ReadJSON(&quiznum); err != nil {
 		ctx.StatusCode(iris.StatusOK)
 		data := ""
@@ -105,7 +108,7 @@ func Deletequiz(ctx iris.Context) {
 		return
 	}
 	ctx.StatusCode(iris.StatusOK)
-	err := datasource.DBdelete_quiz(datasource.Quizdb, quiznum)
+	err := datasource.DBdelete_quiz(datasource.Quizdb, quiznum.Num)
 	if err != nil {
 		data := "delete error"
 		ctx.JSON(model.Response{Status: true, Data: data})
